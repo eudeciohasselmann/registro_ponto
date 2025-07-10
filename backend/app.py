@@ -15,13 +15,24 @@ load_dotenv() # Carrega as variáveis de ambiente do .env
 app = Flask(__name__)
 
 # Configuração do CORS para produção
-if os.getenv('FLASK_ENV') == 'production':
+flask_env = os.getenv('FLASK_ENV', 'development')
+frontend_url = os.getenv('FRONTEND_URL', '')
+
+print(f"🔧 FLASK_ENV: {flask_env}")
+print(f"🔧 FRONTEND_URL: {frontend_url}")
+
+if flask_env == 'production':
     # Em produção, permite apenas o domínio do frontend
-    frontend_url = os.getenv('FRONTEND_URL', '')
-    CORS(app, origins=[frontend_url])
+    if frontend_url:
+        CORS(app, origins=[frontend_url])
+        print(f"✅ CORS configurado para produção com origem: {frontend_url}")
+    else:
+        print("⚠️ FRONTEND_URL não definida, usando CORS permissivo")
+        CORS(app)
 else:
     # Em desenvolvimento, permite qualquer origem
     CORS(app)
+    print("✅ CORS configurado para desenvolvimento (todas as origens)")
 
 # Configuração do Flask-Mail
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
@@ -35,10 +46,53 @@ mail = Mail(app)
 mongodb_uri = os.getenv('MONGODB_URI')
 if not mongodb_uri:
     raise ValueError("MONGODB_URI não encontrada nas variáveis de ambiente")
-client = MongoClient(mongodb_uri)
-db = client.ponto_db
-users_collection = db.users
-records_collection = db.records
+
+try:
+    client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=5000)
+    # Testa a conexão
+    client.admin.command('ping')
+    print("✅ Conexão com MongoDB estabelecida com sucesso")
+    db = client.ponto_db
+    users_collection = db.users
+    records_collection = db.records
+except Exception as e:
+    print(f"❌ Erro ao conectar com MongoDB: {str(e)}")
+    print(f"URI utilizada: {mongodb_uri[:20]}...")  # Mostra apenas o início da URI por segurança
+    raise
+
+# --- Rota de Health Check ---
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    try:
+        # Testa a conexão com MongoDB
+        client.admin.command('ping')
+        
+        # Conta documentos nas coleções principais
+        users_count = users_collection.count_documents({})
+        records_count = records_collection.count_documents({})
+        
+        return jsonify({
+            'status': 'healthy',
+            'mongodb': 'connected',
+            'database': 'ponto_db',
+            'collections': {
+                'users': users_count,
+                'records': records_count
+            },
+            'environment': {
+                'flask_env': os.getenv('FLASK_ENV'),
+                'frontend_url': os.getenv('FRONTEND_URL'),
+                'has_mongodb_uri': bool(os.getenv('MONGODB_URI'))
+            },
+            'timestamp': datetime.now().isoformat()
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'unhealthy',
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
 
 # --- Rotas de Usuário ---
 

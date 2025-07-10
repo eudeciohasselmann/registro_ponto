@@ -2,6 +2,22 @@
 
 Sistema web para controle de ponto eletrônico com funcionalidades de login, registro de horários e recuperação de senha.
 
+## ⚠️ Problemas Resolvidos - MongoDB não carregava após deploy
+
+### Correções Implementadas:
+
+1. **Conexão MongoDB melhorada**: Adicionado timeout e teste de conexão
+2. **URI MongoDB corrigida**: Incluído nome do banco de dados explicitamente
+3. **CORS aprimorado**: Debug detalhado e configuração mais robusta
+4. **Health Check**: Nova rota `/health` para diagnóstico
+5. **Logs detalhados**: Melhor visibilidade de erros e configurações
+
+### Como usar as correções:
+
+1. **Configure as variáveis no Render** (veja `CONFIGURACAO_RENDER.md`)
+2. **Teste o health check**: `https://registro-ponto-api.onrender.com/health`
+3. **Use o script de deploy**: `./deploy.sh`
+
 ## 🚀 Deploy no Render
 
 ### Pré-requisitos
@@ -37,7 +53,7 @@ No painel do Render, configure as seguintes variáveis para o **Backend (registr
 ##### Variáveis Obrigatórias:
 
 ```
-MONGODB_URI=mongodb+srv://eudecio:H210716h@cluster0.qjac7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+MONGODB_URI=mongodb+srv://eudecio:H210716h@cluster0.qjac7.mongodb.net/ponto_db?retryWrites=true&w=majority&appName=Cluster0
 MAIL_USERNAME=eudecio@gmail.com
 MAIL_PASSWORD=uvre sbsd xdie zgyr
 FRONTEND_URL=https://registro-ponto-frontend.onrender.com
