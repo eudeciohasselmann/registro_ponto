@@ -13,7 +13,15 @@ import secrets # Para gerar tokens seguros
 load_dotenv() # Carrega as variáveis de ambiente do .env
 
 app = Flask(__name__)
-CORS(app)
+
+# Configuração do CORS para produção
+if os.getenv('FLASK_ENV') == 'production':
+    # Em produção, permite apenas o domínio do frontend
+    frontend_url = os.getenv('FRONTEND_URL', '')
+    CORS(app, origins=[frontend_url])
+else:
+    # Em desenvolvimento, permite qualquer origem
+    CORS(app)
 
 # Configuração do Flask-Mail
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
@@ -24,7 +32,10 @@ app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 mail = Mail(app)
 
 # Conexão com o MongoDB
-client = MongoClient('mongodb+srv://eudecio:H210716h@cluster0.qjac7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+mongodb_uri = os.getenv('MONGODB_URI')
+if not mongodb_uri:
+    raise ValueError("MONGODB_URI não encontrada nas variáveis de ambiente")
+client = MongoClient(mongodb_uri)
 db = client.ponto_db
 users_collection = db.users
 records_collection = db.records
@@ -179,7 +190,8 @@ def forgot_password():
         )
 
         # Cria o link de redefinição
-        reset_link = f"http://127.0.0.1:5500/reset-password.html?token={token}"
+        frontend_url = os.getenv('FRONTEND_URL', 'http://127.0.0.1:5500')
+        reset_link = f"{frontend_url}/reset-password.html?token={token}"
 
         # Envia o e-mail
         try:

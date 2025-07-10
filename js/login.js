@@ -61,11 +61,8 @@ async function login(event) {
   const senha = document.getElementById("log-pass").value;
 
   try {
-    const response = await fetch("http://127.0.0.1:5000/login", {
+    const response = await apiRequest("LOGIN", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({ nome, senha }),
     });
 
@@ -102,11 +99,8 @@ async function cadastrar(event) {
   }
 
   try {
-    const response = await fetch("http://127.0.0.1:5000/users", {
+    const response = await apiRequest("USERS", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({ nome, email, senha, horas, termsAccepted }),
     });
 
