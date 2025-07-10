@@ -85,7 +85,7 @@ MAIL_PASSWORD=your_app_password_here
 - **Cluster**: Cluster0.qjac7.mongodb.net
 - **Database**: ponto_db
 - **Collections**: users, records
-- **Connection String**: mongodb+srv://eudecio:H210716h@cluster0.qjac7.mongodb.net/
+- **Connection String**: mongodb+srv://xxxxx:xxxxxx@cluster0.qjac7.mongodb.net/
 
 ### Flask Configuration
 
