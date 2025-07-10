@@ -53,9 +53,9 @@ No painel do Render, configure as seguintes variáveis para o **Backend (registr
 ##### Variáveis Obrigatórias:
 
 ```
-MONGODB_URI=mongodb+srv://eudecio:H210716h@cluster0.qjac7.mongodb.net/ponto_db?retryWrites=true&w=majority&appName=Cluster0
-MAIL_USERNAME=eudecio@gmail.com
-MAIL_PASSWORD=uvre sbsd xdie zgyr
+MONGODB_URI=xxxxxx
+MAIL_USERNAME=xxxxxxx
+MAIL_PASSWORD=xxxxxx
 FRONTEND_URL=https://registro-ponto-frontend.onrender.com
 ```
 

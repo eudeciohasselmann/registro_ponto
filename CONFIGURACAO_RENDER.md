@@ -11,14 +11,14 @@ Acesse o painel do Render e configure as seguintes variáveis de ambiente:
 ### 1. MongoDB
 
 ```
-MONGODB_URI=mongodb+srv://eudecio:H210716h@cluster0.qjac7.mongodb.net/ponto_db?retryWrites=true&w=majority&appName=Cluster0
+MONGODB_URI=xxxxxxx
 ```
 
 ### 2. Configurações de Email
 
 ```
-MAIL_USERNAME=eudecio@gmail.com
-MAIL_PASSWORD=uvre sbsd xdie zgyr
+MAIL_USERNAME=xxxxxx
+MAIL_PASSWORD=xxxxxx
 ```
 
 ### 3. URL do Frontend (CRÍTICO para CORS)
