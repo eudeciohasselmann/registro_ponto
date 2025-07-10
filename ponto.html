@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registro de Ponto - Sistema de Controle de Horários</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="header-container">
+        <div class="header-left">
+          <div class="header-icon">⏰</div>
+          <div class="header-title">
+            <h1>Registro de Ponto</h1>
+            <p>Sistema de controle de horários</p>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="user-info">
+            <div class="user-avatar">👤</div>
+            <div class="user-details">
+              <p>Usuário</p>
+              <p id="nomeUsuario"></p>
+            </div>
+          </div>
+          <button class="logout-btn" onclick="logout()">🚪 Sair</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="main-container">
+      <!-- Formulário de Registro -->
+      <div class="time-entry-form">
+        <div class="form-header">
+          <h2>⏱️ Registrar Ponto</h2>
+        </div>
+
+        <div class="form-content">
+          <div class="form-grid form-grid-0">
+            <div class="form-group">
+              <label for="date-0">Data</label>
+              <input type="date" id="date-0" class="date date-0" />
+            </div>
+
+            <div class="form-group">
+              <label for="entry-time-0">Entrada</label>
+              <input type="time" id="entry-time-0" class="
+              entry-time entry-time-0" />
+            </div>
+
+            <div class="form-group">
+              <label for="exit-time-0">Saída</label>
+              <input type="time" id="exit-time-0" class="
+              exit-time exit-time-0" />
+            </div>
+
+            <div class="time-controls">
+            <button
+                class="control-btn add"
+                onclick="addTimeEntry()"
+                title="Adicionar"
+            >
+                ➕
+            </button>
+            <button
+                class="control-btn delete"
+                onclick="removeTimeEntry(event)"
+                title="Remover"
+            >
+                🗑️
+            </button>
+            </div>
+            </div>
+          </div>
+          <div class="parcial-group">
+          <label>Total parcial</label>
+          <div class="partial-total" id="partial-total">--:--</div>
+        </div>
+        </div>       
+
+        <div class="save-btn-container">
+          <button class="save-btn" onclick="saveTimeEntry()">💾 Salvar</button>
+        </div>
+      </div>
+
+      <!-- Tabela de Registros -->
+      <div class="records-table">
+        <div class="table-header">
+          <div class="table-header-content">
+            <h3>Registros do Período</h3>
+            <div class="month-filter">
+              <label for="month-filter">📅 Filtrar por mês:</label>
+              <input type="month" id="month-filter" />
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Horários</th>
+                <th class="center">Total</th>
+                <th class="center">Crédito</th>
+                <th class="center">Débito</th>
+                <th class="center">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="records-tbody">
+              <tr>
+                <td class="date-cell"></td>
+                <td>
+                  <div class="time-periods">
+                    <span class="time-period"></span>
+                    <span class="time-period"></span>
+                  </div>
+                </td>
+                <td class="center">
+                  <span class="badge total"></span>
+                </td>
+                <td class="center">
+                  <span class="badge credit"></span>
+                </td>
+                <td class="center">
+                  <span class="badge debit"></span>
+                </td>
+                <td class="center">
+                  <div class="actions">
+                    <button
+                      class="action-btn edit"
+                      onclick="editRecord('1')"
+                      title="Editar"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      class="action-btn delete"
+                      onclick="deleteRecord('1')"
+                      title="Remover"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Resumo -->
+        <div class="summary">
+          <div class="summary-content">
+            <div class="summary-stats">
+              <div class="summary-stat general">
+                <p>Total geral</p>
+                <p id="total-general">00:00</p>
+              </div>
+              <div class="summary-stat credit">
+                <p>Crédito total</p>
+                <p id="total-credit">00:00</p>
+              </div>
+              <div class="summary-stat debit">
+                <p>Débito total</p>
+                <p id="total-debit">00:00</p>
+              </div>
+              <div class="summary-stat saldo">
+                <p>Saldo</p>
+                <p id="total-saldo">00:00</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/ponto.js"></script>
+  </body>
+</html>
