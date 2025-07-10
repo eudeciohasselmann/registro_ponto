@@ -22,13 +22,13 @@ git commit -m "Preparação para deploy no Render"
 git push origin main
 ```
 
-#### 2. Deploy Automático via render.yaml
+#### 2. Deploy do Backend
 
 1. Acesse o [Dashboard do Render](https://dashboard.render.com)
 2. Clique em "New +" → "Blueprint"
 3. Conecte seu repositório GitHub
 4. Selecione o repositório `registro_ponto`
-5. O Render detectará automaticamente o arquivo `render.yaml`
+5. O Render detectará automaticamente o arquivo `render.yaml` e criará o backend
 
 #### 3. Configuração das Variáveis de Ambiente
 
@@ -50,9 +50,22 @@ FRONTEND_URL=https://registro-ponto-frontend.onrender.com
 - `MAIL_USE_TLS=True`
 - `FLASK_ENV=production`
 
-#### 4. Atualização da URL do Frontend
+#### 4. Deploy do Frontend
 
-Após o deploy do frontend, atualize a variável `FRONTEND_URL` com a URL real gerada pelo Render.
+1. No [Dashboard do Render](https://dashboard.render.com), clique em "New +" → "Static Site"
+2. Conecte o mesmo repositório GitHub
+3. Configure:
+   - **Name**: `registro-ponto-frontend`
+   - **Branch**: `main`
+   - **Build Command**: (deixe vazio)
+   - **Publish Directory**: `.` (raiz do projeto)
+4. Clique em "Create Static Site"
+
+#### 5. Configuração Final
+
+1. Após o deploy do frontend, copie a URL gerada (ex: `https://registro-ponto-frontend.onrender.com`)
+2. No painel do backend, atualize a variável `FRONTEND_URL` com esta URL
+3. Atualize também o arquivo `js/config.js` se necessário com a URL correta do backend
 
 ### 🔒 Segurança
 

@@ -23,19 +23,3 @@ services:
         sync: false
       - key: FLASK_ENV
         value: production
-
-  # Frontend Static Site
-  - type: static
-    name: registro-ponto-frontend
-    buildCommand: ""
-    staticPublishPath: .
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
-    envVars:
-      - key: REACT_APP_API_URL
-        fromService:
-          type: web
-          name: registro-ponto-api
-          property: host
