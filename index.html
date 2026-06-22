@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Registro de Ponto</title>
+    <link rel="stylesheet" href="css/login.css" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="form-header">
+        <div class="titles">
+          <div class="title-login">Login</div>
+          <div class="title-register">Register</div>
+        </div>
+      </div>
+      <!-- LOGIN FORM -->
+      <form action="#" class="login-form" autocomplete="off">
+        <div class="input-box">
+          <input
+            type="text"
+            class="input-field"
+            id="log-user"
+            required
+            autocomplete="off"
+          />
+          <label for="log-user" class="label">Usuário</label>
+          <i class="bx bx-user icon"></i>
+        </div>
+        <div class="input-box">
+          <input
+            type="password"
+            class="input-field"
+            id="log-pass"
+            required
+            autocomplete="off"
+          />
+          <label for="log-pass" class="label">Senha</label>
+          <i class="bx bx-lock-alt icon"></i>
+        </div>
+        <div class="form-cols">
+          <div class="col-1"></div>
+          <div class="col-2">
+            <a href="#" onclick="recoverPassword()">Esqueceu a senha?</a>
+          </div>
+        </div>
+        <div class="input-box">
+          <button onclick="login(event)" class="btn-submit" id="SignInBtn">
+            Login <i class="bx bx-log-in"></i>
+          </button>
+        </div>
+        <div class="switch-form">
+          <span
+            >Não tem uma conta?
+            <a href="#" onclick="registerFunction()">Registrar</a></span
+          >
+        </div>
+      </form>
+      <!-- REGISTER FORM -->
+      <form action="#" class="register-form">
+        <div class="input-box">
+          <input
+            type="text"
+            class="input-field"
+            id="reg-name"
+            required
+            autocomplete="off"
+          />
+          <label for="reg-name" class="label">Usuário</label>
+          <i class="bx bx-user icon"></i>
+        </div>
+        <div class="input-box">
+          <input
+            type="text"
+            class="input-field"
+            id="reg-email"
+            required
+            autocomplete="off"
+          />
+          <label for="reg-email" class="label">Email</label>
+          <i class="bx bx-envelope icon"></i>
+        </div>
+        <div class="input-box">
+          <input
+            type="password"
+            class="input-field"
+            id="reg-pass"
+            required
+            autocomplete="off"
+          />
+          <label for="reg-pass" class="label">Senha</label>
+          <i class="bx bx-lock-alt icon"></i>
+        </div>
+        <div class="input-box">
+          <input
+            type="text"
+            class="input-field"
+            id="reg-time"
+            required
+            autocomplete="off"
+          />
+          <label for="reg-time" class="label">Horas dia</label>
+          <i class="bx bx-time icon"></i>
+        </div>
+        <div class="form-cols">
+          <div class="col-1">
+            <input type="checkbox" id="agree" />
+            <label for="agree"> Eu aceito os termos e condições</label>
+          </div>
+          <div class="col-2"></div>
+        </div>
+        <div class="input-box">
+          <button onclick="cadastrar(event)" class="btn-submit" id="SignUpBtn">
+            Adicionar <i class="bx bx-user-plus"></i>
+          </button>
+        </div>
+        <div class="switch-form">
+          <span
+            >Já tem uma conta?
+            <a href="#" onclick="loginFunction()">Login</a></span
+          >
+        </div>
+      </form>
+    </div>
+    <script src="js/login.js"></script>
+  </body>
+</html>
