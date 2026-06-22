@@ -1,6 +1,6 @@
 const API_URL = "";
 
-// Vari√°vel para armazenar o m√™s atual do filtro
+// Vari·vel para armazenar o m?s atual do filtro
 let currentFilterMonth = "";
 
 const usuario = sessionStorage.getItem("usuarioAtual");
@@ -10,18 +10,18 @@ if (!usuario) {
   document.getElementById("nomeUsuario").textContent = usuario;
 }
 
-// Fun√ß√£o de logout
+// FunÁ?o de logout
 function logout() {
   sessionStorage.removeItem("usuarioAtual");
   window.location.href = "index.html";
 }
 
-// Fun√ß√£o para buscar registros da API
+// FunÁ?o para buscar registros da API
 async function fetchRecords() {
   if (!currentFilterMonth) return [];
   try {
     const response = await fetch(
-      `${API_URL}/records/${usuario}?month=${currentFilterMonth}`
+      `${API_URL}/records/${usuario}?month=${currentFilterMonth}`,
     );
     if (!response.ok) {
       throw new Error("Falha ao buscar registros");
@@ -29,12 +29,12 @@ async function fetchRecords() {
     return await response.json();
   } catch (error) {
     console.error("Erro:", error);
-    alert("N√£o foi poss√≠vel carregar os registros do servidor.");
+    alert("N?o foi possÌvel carregar os registros do servidor.");
     return [];
   }
 }
 
-// Fun√ß√£o para calcular diferen√ßa entre hor√°rios
+// FunÁ?o para calcular diferenÁa entre hor·rios
 function calculateTimeDifference(start, end) {
   const startTime = new Date(`2000-01-01 ${start}`);
   const endTime = new Date(`2000-01-01 ${end}`);
@@ -48,7 +48,7 @@ function calculateTimeDifference(start, end) {
     .padStart(2, "0")}`;
 }
 
-// Fun√ß√£o para calcular total parcial
+// FunÁ?o para calcular total parcial
 function updatePartialTotal() {
   let totalMinutes = 0;
   document.querySelectorAll(".form-grid").forEach((row, index) => {
@@ -82,7 +82,7 @@ function horasParaMinutos(horasStr) {
   return h * 60 + (m || 0);
 }
 
-// Fun√ß√£o para salvar registro na API
+// FunÁ?o para salvar registro na API
 async function saveTimeEntry() {
   const formGrids = document.querySelectorAll(".form-grid");
   if (formGrids.length === 0) {
@@ -90,8 +90,8 @@ async function saveTimeEntry() {
     return;
   }
 
-  // Busca as horas di√°rias do usu√°rio pela API
-  let standardMinutes = horasParaMinutos("08:00"); // Padr√£o
+  // Busca as horas di·rias do usu·rio pela API
+  let standardMinutes = horasParaMinutos("08:00"); // Padr?o
   try {
     const response = await fetch(`${API_URL}/users/${usuario}`);
     if (response.ok) {
@@ -99,7 +99,7 @@ async function saveTimeEntry() {
       standardMinutes = horasParaMinutos(data.horas);
     }
   } catch (e) {
-    console.error("Erro ao buscar horas do usu√°rio, usando padr√£o 8h.");
+    console.error("Erro ao buscar horas do usu·rio, usando padr?o 8h.");
   }
 
   const registrosPorData = {};
@@ -121,23 +121,35 @@ async function saveTimeEntry() {
     return;
   }
 
-  // Envia cada data como uma requisi√ß√£o separada
+  // Envia cada data como uma requisiÁ?o separada
   for (const date in registrosPorData) {
     const periods = registrosPorData[date];
     let totalMinutes = 0;
     periods.forEach((p) => {
-      const [h, m] = calculateTimeDifference(p.start, p.end).split(":").map(Number);
+      const [h, m] = calculateTimeDifference(p.start, p.end)
+        .split(":")
+        .map(Number);
       totalMinutes += h * 60 + m;
     });
 
-    const totalStr = `${Math.floor(totalMinutes / 60).toString().padStart(2, "0")}:${(totalMinutes % 60).toString().padStart(2, "0")}`;
+    const totalStr = `${Math.floor(totalMinutes / 60)
+      .toString()
+      .padStart(2, "0")}:${(totalMinutes % 60).toString().padStart(2, "0")}`;
     const diffMinutes = totalMinutes - standardMinutes;
 
-    let credit = "00:00", debit = "00:00";
+    let credit = "00:00",
+      debit = "00:00";
     if (diffMinutes > 0) {
-      credit = `${Math.floor(diffMinutes / 60).toString().padStart(2, "0")}:${(diffMinutes % 60).toString().padStart(2, "0")}`;
+      credit = `${Math.floor(diffMinutes / 60)
+        .toString()
+        .padStart(2, "0")}:${(diffMinutes % 60).toString().padStart(2, "0")}`;
     } else if (diffMinutes < 0) {
-      debit = `${Math.floor(Math.abs(diffMinutes) / 60).toString().padStart(2, "0")}:${(Math.abs(diffMinutes) % 60).toString().padStart(2, "0")}`;
+      debit = `${Math.floor(Math.abs(diffMinutes) / 60)
+        .toString()
+        .padStart(
+          2,
+          "0",
+        )}:${(Math.abs(diffMinutes) % 60).toString().padStart(2, "0")}`;
     }
 
     const payload = {
@@ -162,44 +174,51 @@ async function saveTimeEntry() {
       }
     } catch (error) {
       console.error("Erro:", error);
-      alert(`N√£o foi poss√≠vel salvar o registro para a data ${date}.`);
+      alert(`N?o foi possÌvel salvar o registro para a data ${date}.`);
       return; // Interrompe se um salvar falhar
     }
   }
 
-  // Limpa o formul√°rio e atualiza a interface
+  // Limpa o formul·rio e atualiza a interface
   clearForm();
   await refreshData();
   alert("Registros salvos com sucesso!");
 }
 
 function clearForm() {
-    const container = document.querySelector(".form-content");
-    container.querySelectorAll(".form-grid:not(:first-child)").forEach((row) => row.remove());
-    const firstRow = container.querySelector(".form-grid");
-    if (firstRow) {
-        firstRow.querySelector(".date-0").value = "";
-        firstRow.querySelector(".entry-time-0").value = "";
-        firstRow.querySelector(".exit-time-0").value = "";
-    }
-    updatePartialTotal();
+  const container = document.querySelector(".form-content");
+  container
+    .querySelectorAll(".form-grid:not(:first-child)")
+    .forEach((row) => row.remove());
+  const firstRow = container.querySelector(".form-grid");
+  if (firstRow) {
+    firstRow.querySelector(".date-0").value = "";
+    firstRow.querySelector(".entry-time-0").value = "";
+    firstRow.querySelector(".exit-time-0").value = "";
+  }
+  updatePartialTotal();
 }
 
-// Fun√ß√£o para renderizar registros na tabela
+// FunÁ?o para renderizar registros na tabela
 async function renderRecords() {
   const tbody = document.getElementById("records-tbody");
   tbody.innerHTML = "";
   const records = await fetchRecords();
 
   if (records.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #64748b;">Nenhum registro para o per√≠odo.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #64748b;">Nenhum registro para o perÌodo.</td></tr>`;
     return;
   }
 
   const groupedByDate = records.reduce((acc, record) => {
-    acc[record.date] = acc[record.date] || { periods: [], total: "00:00", credit: "00:00", debit: "00:00" };
+    acc[record.date] = acc[record.date] || {
+      periods: [],
+      total: "00:00",
+      credit: "00:00",
+      debit: "00:00",
+    };
     acc[record.date].periods.push(...record.periods);
-    // Os totais j√° v√™m do backend, ent√£o apenas os usamos.
+    // Os totais j· v?m do backend, ent?o apenas os usamos.
     acc[record.date].total = record.total;
     acc[record.date].credit = record.credit;
     acc[record.date].debit = record.debit;
@@ -220,8 +239,8 @@ async function renderRecords() {
       <td class="center"><span class="badge debit">${data.debit}</span></td>
       <td class="center">
         <div class="actions">
-          <button class="action-btn edit" onclick="editRecord('${date}')" title="Editar">‚úèÔ∏è</button>
-          <button class="action-btn delete" onclick="deleteRecord('${date}')" title="Remover">üóëÔ∏è</button>
+          <button class="action-btn edit" onclick="editRecord('${date}')" title="Editar">??</button>
+          <button class="action-btn delete" onclick="deleteRecord('${date}')" title="Remover">???</button>
         </div>
       </td>
     `;
@@ -229,10 +248,12 @@ async function renderRecords() {
   });
 }
 
-// Fun√ß√£o para atualizar resumo
+// FunÁ?o para atualizar resumo
 async function updateSummary() {
   const records = await fetchRecords();
-  let totalMinutes = 0, creditMinutes = 0, debitMinutes = 0;
+  let totalMinutes = 0,
+    creditMinutes = 0,
+    debitMinutes = 0;
 
   records.forEach((r) => {
     totalMinutes += horasParaMinutos(r.total);
@@ -240,10 +261,15 @@ async function updateSummary() {
     debitMinutes += horasParaMinutos(r.debit);
   });
 
-  const formatTime = (min) => `${Math.floor(min / 60).toString().padStart(2, "0")}:${(min % 60).toString().padStart(2, "0")}`;
+  const formatTime = (min) =>
+    `${Math.floor(min / 60)
+      .toString()
+      .padStart(2, "0")}:${(min % 60).toString().padStart(2, "0")}`;
 
-  document.getElementById("total-general").textContent = formatTime(totalMinutes);
-  document.getElementById("total-credit").textContent = formatTime(creditMinutes);
+  document.getElementById("total-general").textContent =
+    formatTime(totalMinutes);
+  document.getElementById("total-credit").textContent =
+    formatTime(creditMinutes);
   document.getElementById("total-debit").textContent = formatTime(debitMinutes);
 
   const saldoMinutes = creditMinutes - debitMinutes;
@@ -257,43 +283,50 @@ async function updateSummary() {
   else if (saldoMinutes < 0) saldoContainer.classList.add("negativo");
 }
 
-// Fun√ß√£o para editar registro
+// FunÁ?o para editar registro
 async function editRecord(date) {
-    const records = await fetchRecords();
-    const periodsToEdit = records.filter(r => r.date === date).flatMap(r => r.periods);
+  const records = await fetchRecords();
+  const periodsToEdit = records
+    .filter((r) => r.date === date)
+    .flatMap((r) => r.periods);
 
-    if (periodsToEdit.length === 0) {
-        alert("Nenhum per√≠odo encontrado para editar.");
-        return;
+  if (periodsToEdit.length === 0) {
+    alert("Nenhum perÌodo encontrado para editar.");
+    return;
+  }
+
+  clearForm();
+  const container = document.querySelector(".form-content");
+
+  periodsToEdit.forEach((period, index) => {
+    let currentRow;
+    if (index === 0) {
+      currentRow = container.querySelector(".form-grid");
+    } else {
+      addTimeEntry(false); // Adiciona nova linha sem validar a anterior
+      currentRow = container.querySelector(`.form-grid-${index}`);
     }
+    currentRow.querySelector(`.date-${index}`).value = date;
+    currentRow.querySelector(`.entry-time-${index}`).value = period.start;
+    currentRow.querySelector(`.exit-time-${index}`).value = period.end;
+  });
 
-    clearForm();
-    const container = document.querySelector(".form-content");
-
-    periodsToEdit.forEach((period, index) => {
-        let currentRow;
-        if (index === 0) {
-            currentRow = container.querySelector(".form-grid");
-        } else {
-            addTimeEntry(false); // Adiciona nova linha sem validar a anterior
-            currentRow = container.querySelector(`.form-grid-${index}`);
-        }
-        currentRow.querySelector(`.date-${index}`).value = date;
-        currentRow.querySelector(`.entry-time-${index}`).value = period.start;
-        currentRow.querySelector(`.exit-time-${index}`).value = period.end;
-    });
-
-    updatePartialTotal();
-    window.scrollTo(0, 0);
+  updatePartialTotal();
+  window.scrollTo(0, 0);
 }
 
-// Fun√ß√£o para deletar registro
+// FunÁ?o para deletar registro
 async function deleteRecord(date) {
-  if (confirm(`Tem certeza que deseja remover todos os registros do dia ${date}?`)) {
+  if (
+    confirm(`Tem certeza que deseja remover todos os registros do dia ${date}?`)
+  ) {
     try {
-      const response = await fetch(`${API_URL}/records/${date}?user=${usuario}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${API_URL}/records/${date}?user=${usuario}`,
+        {
+          method: "DELETE",
+        },
+      );
       if (!response.ok) {
         const err = await response.json();
         throw new Error(err.error || "Erro ao deletar");
@@ -301,27 +334,27 @@ async function deleteRecord(date) {
       await refreshData();
     } catch (error) {
       console.error("Erro:", error);
-      alert("N√£o foi poss√≠vel remover o registro.");
+      alert("N?o foi possÌvel remover o registro.");
     }
   }
 }
 
-// Fun√ß√£o para adicionar per√≠odo de tempo
+// FunÁ?o para adicionar perÌodo de tempo
 function addTimeEntry(validate = true) {
   const container = document.querySelector(".form-content");
   const index = container.querySelectorAll(".form-grid").length;
 
   if (validate) {
-      const lastRow = container.querySelector(`.form-grid-${index - 1}`);
-      const date = lastRow.querySelector(`.date-${index - 1}`).value;
-      const entryTime = lastRow.querySelector(`.entry-time-${index - 1}`).value;
-      const exitTime = lastRow.querySelector(`.exit-time-${index - 1}`).value;
-      if (!date || !entryTime || !exitTime) {
-          alert("Preencha a linha anterior antes de adicionar uma nova.");
-          return;
-      }
+    const lastRow = container.querySelector(`.form-grid-${index - 1}`);
+    const date = lastRow.querySelector(`.date-${index - 1}`).value;
+    const entryTime = lastRow.querySelector(`.entry-time-${index - 1}`).value;
+    const exitTime = lastRow.querySelector(`.exit-time-${index - 1}`).value;
+    if (!date || !entryTime || !exitTime) {
+      alert("Preencha a linha anterior antes de adicionar uma nova.");
+      return;
+    }
   }
-  
+
   const newRow = document.createElement("div");
   newRow.className = `form-grid form-grid-${index}`;
   const lastDate = container.querySelector(`.date-${index - 1}`)?.value || "";
@@ -336,31 +369,40 @@ function addTimeEntry(validate = true) {
       <input type="time" id="entry-time-${index}" class="entry-time entry-time-${index}" />
     </div>
     <div class="form-group">
-      <label for="exit-time-${index}">Sa√≠da</label>
+      <label for="exit-time-${index}">SaÌda</label>
       <input type="time" id="exit-time-${index}" class="exit-time exit-time-${index}" />
     </div>
     <div class="time-controls">
-      <button class="control-btn add" onclick="addTimeEntry()" title="Adicionar">‚ûï</button>
-      <button class="control-btn delete" onclick="removeTimeEntry(event)" title="Remover">üóëÔ∏è</button>
+      <button class="control-btn add" onclick="addTimeEntry()" title="Adicionar">?</button>
+      <button class="control-btn delete" onclick="removeTimeEntry(event)" title="Remover">???</button>
     </div>
   `;
   container.appendChild(newRow);
-  newRow.querySelector(`.exit-time-${index}`).addEventListener("blur", updatePartialTotal);
+  newRow
+    .querySelector(`.exit-time-${index}`)
+    .addEventListener("blur", updatePartialTotal);
 }
 
-// Fun√ß√£o para remover per√≠odo de tempo
+// FunÁ?o para remover perÌodo de tempo
 function removeTimeEntry(event) {
   const row = event.target.closest(".form-grid");
-  if (row && row.parentElement.children.length > 1 && row !== row.parentElement.firstElementChild) {
+  if (
+    row &&
+    row.parentElement.children.length > 1 &&
+    row !== row.parentElement.firstElementChild
+  ) {
     row.remove();
     updatePartialTotal();
   }
 }
 
 async function refreshData() {
-    await renderRecords();
-    await updateSummary();
+  await renderRecords();
+  await updateSummary();
+  if (window.refreshDashboard) await window.refreshDashboard();
 }
+
+window.refreshData = refreshData;
 
 // Event Listeners
 document.getElementById("month-filter").addEventListener("change", function () {

@@ -186,6 +186,11 @@ body {
   box-shadow: var(--shadow);
 }
 
+.dashboard-card.success { border-left: 4px solid var(--success); }
+.dashboard-card.danger { border-left: 4px solid var(--danger); }
+.dashboard-card.warning { border-left: 4px solid var(--warning); }
+.dashboard-card.primary { border-left: 4px solid var(--primary); }
+
 .dashboard-card-icon {
   width: 48px;
   height: 48px;

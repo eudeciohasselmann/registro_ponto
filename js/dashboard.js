@@ -22,7 +22,7 @@ function diasUteisNoMes(ano, mes) {
   return count;
 }
 
-async function fetchRecords(user, month) {
+async function dashboardFetchRecords(user, month) {
   try {
     const r = await fetch(`${API_URL}/records/${user}?month=${month}`);
     if (!r.ok) return [];
@@ -60,10 +60,13 @@ function aggregateByDate(records) {
 }
 
 function renderDashboardCards(stats) {
-  const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
 
   setVal("dash-days", stats.daysWorked);
-  setVal("dash-days-sub", `/ ${stats.totalDays} dias úteis`);
+  setVal("dash-days-sub", `/ ${stats.totalDays} dias �teis`);
 
   setVal("dash-avg", minutosParaHoras(Math.round(stats.avgDaily)));
   setVal("dash-avg-sub", `meta: ${minutosParaHoras(stats.goalMinutes)}/dia`);
@@ -74,19 +77,24 @@ function renderDashboardCards(stats) {
   const projEl = document.getElementById("dash-proj-sub");
   if (projEl) {
     const cor = projDiff >= 0 ? "var(--success)" : "var(--danger)";
-    projEl.innerHTML = `projeção final: <span style="color:${cor};font-weight:600">${projDiff >= 0 ? "+" : ""}${minutosParaHoras(Math.round(projDiff))}</span>`;
+    projEl.innerHTML = `proje�?o final: <span style="color:${cor};font-weight:600">${projDiff >= 0 ? "+" : ""}${minutosParaHoras(Math.round(projDiff))}</span>`;
   }
 
   setVal("dash-saldo", minutosParaHoras(stats.balance));
   const saldoEl = document.getElementById("dash-saldo-sub");
   if (saldoEl) {
-    saldoEl.textContent = stats.balance >= 0 ? "horas extras acumuladas" : "horas negativas acumuladas";
+    saldoEl.textContent =
+      stats.balance >= 0
+        ? "horas extras acumuladas"
+        : "horas negativas acumuladas";
   }
 
   const card = document.getElementById("dash-saldo-card");
   if (card) {
     card.className = "dashboard-card";
-    card.classList.add(stats.balance > 0 ? "success" : stats.balance < 0 ? "danger" : "warning");
+    card.classList.add(
+      stats.balance > 0 ? "success" : stats.balance < 0 ? "danger" : "warning",
+    );
   }
 }
 
@@ -115,7 +123,9 @@ function renderBarChart(dailyData, monthLabel) {
           data: values,
           backgroundColor: values.map((v) => {
             const avg = values.reduce((a, b) => a + b, 0) / values.length || 1;
-            return v >= avg ? "rgba(79, 70, 229, 0.75)" : "rgba(251, 191, 36, 0.65)";
+            return v >= avg
+              ? "rgba(79, 70, 229, 0.75)"
+              : "rgba(251, 191, 36, 0.65)";
           }),
           borderColor: values.map((v) => {
             const avg = values.reduce((a, b) => a + b, 0) / values.length || 1;
@@ -176,11 +186,14 @@ function renderDonutChart(records) {
   donutChart = new Chart(ctx, {
     type: "doughnut",
     data: {
-      labels: ["Crédito (extras)", "Débito (negativas)"],
+      labels: ["Cr�dito (extras)", "D�bito (negativas)"],
       datasets: [
         {
           data: [totalCredit, totalDebit],
-          backgroundColor: ["rgba(16, 185, 129, 0.8)", "rgba(239, 68, 68, 0.8)"],
+          backgroundColor: [
+            "rgba(16, 185, 129, 0.8)",
+            "rgba(239, 68, 68, 0.8)",
+          ],
           borderColor: ["#10b981", "#ef4444"],
           borderWidth: 2,
         },
@@ -225,7 +238,7 @@ async function refreshDashboard() {
   const [year, mes] = month.split("-").map(Number);
 
   const [records, goalMinutes] = await Promise.all([
-    fetchRecords(usuario, month),
+    dashboardFetchRecords(usuario, month),
     fetchUserHours(usuario),
   ]);
 
@@ -234,13 +247,26 @@ async function refreshDashboard() {
   const daysWorked = daysSet.size;
   const totalDays = diasUteisNoMes(year, mes);
 
-  const totalMinutes = Object.values(byDate).reduce((s, d) => s + d.totalMin, 0);
-  const totalCredit = Object.values(byDate).reduce((s, d) => s + d.creditMin, 0);
+  const totalMinutes = Object.values(byDate).reduce(
+    (s, d) => s + d.totalMin,
+    0,
+  );
+  const totalCredit = Object.values(byDate).reduce(
+    (s, d) => s + d.creditMin,
+    0,
+  );
   const totalDebit = Object.values(byDate).reduce((s, d) => s + d.debitMin, 0);
   const avgDaily = daysWorked > 0 ? totalMinutes / daysWorked : 0;
   const balance = totalCredit - totalDebit;
 
-  const stats = { daysWorked, totalDays, avgDaily, goalMinutes, totalMinutes, balance };
+  const stats = {
+    daysWorked,
+    totalDays,
+    avgDaily,
+    goalMinutes,
+    totalMinutes,
+    balance,
+  };
 
   renderDashboardCards(stats);
 
@@ -267,12 +293,8 @@ document.addEventListener("DOMContentLoaded", () => {
     monthInput.addEventListener("change", handler);
   }
 
-  if (window.refreshData && typeof window.refreshData === "function" && !window._dashPatched) {
+  if (window.refreshData && typeof window.refreshData === "function") {
     window._dashPatched = true;
-  } else if (!window.refreshData || typeof window.refreshData !== "function") {
-    window.refreshData = async () => {
-      await refreshDashboard();
-    };
   }
 
   setTimeout(refreshDashboard, 100);
