@@ -3,6 +3,4 @@ __pycache__/
 *.pyc
 .env
 memory-bank/
-README_MIGRACAO.md
-CONFIGURACAO_EMAIL.md
 .clinerules

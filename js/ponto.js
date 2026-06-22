@@ -1,7 +1,8 @@
 const API_URL = "";
 
-// Vari·vel para armazenar o m?s atual do filtro
+// Vari√°vel para armazenar o m√™s atual do filtro
 let currentFilterMonth = "";
+window.currentFilterMonth = currentFilterMonth;
 
 const usuario = sessionStorage.getItem("usuarioAtual");
 if (!usuario) {
@@ -10,13 +11,13 @@ if (!usuario) {
   document.getElementById("nomeUsuario").textContent = usuario;
 }
 
-// FunÁ?o de logout
+// Fun√ß√£o de logout
 function logout() {
   sessionStorage.removeItem("usuarioAtual");
   window.location.href = "index.html";
 }
 
-// FunÁ?o para buscar registros da API
+// Fun√ß√£o para buscar registros da API
 async function fetchRecords() {
   if (!currentFilterMonth) return [];
   try {
@@ -29,12 +30,12 @@ async function fetchRecords() {
     return await response.json();
   } catch (error) {
     console.error("Erro:", error);
-    alert("N?o foi possÌvel carregar os registros do servidor.");
+    alert("Nao foi poss√≠vel carregar os registros do servidor.");
     return [];
   }
 }
 
-// FunÁ?o para calcular diferenÁa entre hor·rios
+// Fun√ß√£o para calcular diferen√ßa entre hor√°rios
 function calculateTimeDifference(start, end) {
   const startTime = new Date(`2000-01-01 ${start}`);
   const endTime = new Date(`2000-01-01 ${end}`);
@@ -48,7 +49,7 @@ function calculateTimeDifference(start, end) {
     .padStart(2, "0")}`;
 }
 
-// FunÁ?o para calcular total parcial
+// Fun√ß√£o para calcular total parcial
 function updatePartialTotal() {
   let totalMinutes = 0;
   document.querySelectorAll(".form-grid").forEach((row, index) => {
@@ -82,7 +83,7 @@ function horasParaMinutos(horasStr) {
   return h * 60 + (m || 0);
 }
 
-// FunÁ?o para salvar registro na API
+// Fun√ß√£o para salvar registro na API
 async function saveTimeEntry() {
   const formGrids = document.querySelectorAll(".form-grid");
   if (formGrids.length === 0) {
@@ -90,7 +91,7 @@ async function saveTimeEntry() {
     return;
   }
 
-  // Busca as horas di·rias do usu·rio pela API
+  // Busca as horas di√°rias do usu√°rio pela API
   let standardMinutes = horasParaMinutos("08:00"); // Padr?o
   try {
     const response = await fetch(`${API_URL}/users/${usuario}`);
@@ -99,7 +100,7 @@ async function saveTimeEntry() {
       standardMinutes = horasParaMinutos(data.horas);
     }
   } catch (e) {
-    console.error("Erro ao buscar horas do usu·rio, usando padr?o 8h.");
+    console.error("Erro ao buscar horas do usu√°rio, usando padr?o 8h.");
   }
 
   const registrosPorData = {};
@@ -121,7 +122,7 @@ async function saveTimeEntry() {
     return;
   }
 
-  // Envia cada data como uma requisiÁ?o separada
+  // Envia cada data como uma requisi√ß?o separada
   for (const date in registrosPorData) {
     const periods = registrosPorData[date];
     let totalMinutes = 0;
@@ -174,12 +175,12 @@ async function saveTimeEntry() {
       }
     } catch (error) {
       console.error("Erro:", error);
-      alert(`N?o foi possÌvel salvar o registro para a data ${date}.`);
+      alert(`Nao foi poss√≠vel salvar o registro para a data ${date}.`);
       return; // Interrompe se um salvar falhar
     }
   }
 
-  // Limpa o formul·rio e atualiza a interface
+  // Limpa o formul√°rio e atualiza a interface
   clearForm();
   await refreshData();
   alert("Registros salvos com sucesso!");
@@ -199,14 +200,14 @@ function clearForm() {
   updatePartialTotal();
 }
 
-// FunÁ?o para renderizar registros na tabela
+// Fun√ß√£o para renderizar registros na tabela
 async function renderRecords() {
   const tbody = document.getElementById("records-tbody");
   tbody.innerHTML = "";
   const records = await fetchRecords();
 
   if (records.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #64748b;">Nenhum registro para o perÌodo.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #64748b;">Nenhum registro para o per√≠odo.</td></tr>`;
     return;
   }
 
@@ -218,7 +219,7 @@ async function renderRecords() {
       debit: "00:00",
     };
     acc[record.date].periods.push(...record.periods);
-    // Os totais j· v?m do backend, ent?o apenas os usamos.
+    // Os totais j√° v?m do backend, ent?o apenas os usamos.
     acc[record.date].total = record.total;
     acc[record.date].credit = record.credit;
     acc[record.date].debit = record.debit;
@@ -239,8 +240,12 @@ async function renderRecords() {
       <td class="center"><span class="badge debit">${data.debit}</span></td>
       <td class="center">
         <div class="actions">
-          <button class="action-btn edit" onclick="editRecord('${date}')" title="Editar">??</button>
-          <button class="action-btn delete" onclick="deleteRecord('${date}')" title="Remover">???</button>
+          <button class="action-btn edit" onclick="editRecord('${date}')" title="Editar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+          </button>
+          <button class="action-btn delete" onclick="deleteRecord('${date}')" title="Remover">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
         </div>
       </td>
     `;
@@ -248,7 +253,7 @@ async function renderRecords() {
   });
 }
 
-// FunÁ?o para atualizar resumo
+// Fun√ß√£o para atualizar resumo
 async function updateSummary() {
   const records = await fetchRecords();
   let totalMinutes = 0,
@@ -283,7 +288,7 @@ async function updateSummary() {
   else if (saldoMinutes < 0) saldoContainer.classList.add("negativo");
 }
 
-// FunÁ?o para editar registro
+// Fun√ß√£o para editar registro
 async function editRecord(date) {
   const records = await fetchRecords();
   const periodsToEdit = records
@@ -291,7 +296,7 @@ async function editRecord(date) {
     .flatMap((r) => r.periods);
 
   if (periodsToEdit.length === 0) {
-    alert("Nenhum perÌodo encontrado para editar.");
+    alert("Nenhum per√≠odo encontrado para editar.");
     return;
   }
 
@@ -315,7 +320,7 @@ async function editRecord(date) {
   window.scrollTo(0, 0);
 }
 
-// FunÁ?o para deletar registro
+// Fun√ß√£o para deletar registro
 async function deleteRecord(date) {
   if (
     confirm(`Tem certeza que deseja remover todos os registros do dia ${date}?`)
@@ -334,12 +339,12 @@ async function deleteRecord(date) {
       await refreshData();
     } catch (error) {
       console.error("Erro:", error);
-      alert("N?o foi possÌvel remover o registro.");
+      alert("Nao foi poss√≠vel remover o registro.");
     }
   }
 }
 
-// FunÁ?o para adicionar perÌodo de tempo
+// Fun√ß√£o para adicionar per√≠odo de tempo
 function addTimeEntry(validate = true) {
   const container = document.querySelector(".form-content");
   const index = container.querySelectorAll(".form-grid").length;
@@ -369,12 +374,16 @@ function addTimeEntry(validate = true) {
       <input type="time" id="entry-time-${index}" class="entry-time entry-time-${index}" />
     </div>
     <div class="form-group">
-      <label for="exit-time-${index}">SaÌda</label>
+      <label for="exit-time-${index}">Sa√≠da</label>
       <input type="time" id="exit-time-${index}" class="exit-time exit-time-${index}" />
     </div>
     <div class="time-controls">
-      <button class="control-btn add" onclick="addTimeEntry()" title="Adicionar">?</button>
-      <button class="control-btn delete" onclick="removeTimeEntry(event)" title="Remover">???</button>
+      <button class="control-btn add" onclick="addTimeEntry()" title="Adicionar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <button class="control-btn delete" onclick="removeTimeEntry(event)" title="Remover">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      </button>
     </div>
   `;
   container.appendChild(newRow);
@@ -383,7 +392,7 @@ function addTimeEntry(validate = true) {
     .addEventListener("blur", updatePartialTotal);
 }
 
-// FunÁ?o para remover perÌodo de tempo
+// Fun√ß√£o para remover per√≠odo de tempo
 function removeTimeEntry(event) {
   const row = event.target.closest(".form-grid");
   if (
@@ -407,6 +416,7 @@ window.refreshData = refreshData;
 // Event Listeners
 document.getElementById("month-filter").addEventListener("change", function () {
   currentFilterMonth = this.value;
+  window.currentFilterMonth = currentFilterMonth;
   refreshData();
 });
 
@@ -419,6 +429,7 @@ window.addEventListener("DOMContentLoaded", function () {
     const formattedMonth = `${year}-${month}`;
     monthInput.value = formattedMonth;
     currentFilterMonth = formattedMonth;
+    window.currentFilterMonth = formattedMonth;
   }
   refreshData();
   updatePartialTotal();
